@@ -1,0 +1,30 @@
+customer login 
+
+{
+  "userName": "customer01",
+  "email": "customer01@gmail.com",
+  "password": "Abc#12345"
+}
+
+{
+  "userName": "customer02",
+  "email": "customer02@gmail.com",
+  "password": "Abc#12345"
+}
+
+
+staff logins 
+
+{
+  "userName": "inventory01",
+  "email": "inventory01@gmail.com",
+  "password": "Abc#12345",
+  "stafftype": "INVENTORYSTAFF"
+}
+
+{
+  "userName": "sales01",
+  "email": "sales01@gmail.com",
+  "password": "Abc#12345",
+  "stafftype": "SALESSTAFF"
+}
