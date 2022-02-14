@@ -14,5 +14,14 @@ namespace SmartCookers_WebAPI.Data
         {
             base.OnModelCreating(builder);
         }
+
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Product_Picture> Product_Pictures { get; set; }
+        public DbSet<Outlet> Outlets { get; set; }
+        public DbSet<Product_In_Outlet> Product_In_Outlets { get; set; }
+        public DbSet<Product_Order> Product_Order { get; set; }
+        public DbSet<Order> Order { get; set; }
+
+        public DbSet<Customer_Address> Customer_Addresses { get; set; }
     }
 }

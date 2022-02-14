@@ -12,5 +12,12 @@ namespace SmartCookers_WebAPI.Models
         public DateTime? LastUpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }
         public bool? IsDeleted { get; set; }
+
+
+
+        public ICollection<Outlet>? Outlets { get; set; }
+        public ICollection<Order>? Orders { get; set; }
+        public ICollection<Product>? Products { get; set; }
+        public ICollection<Customer_Address>? Customer_Addresses { get; set; }
     }
 }
