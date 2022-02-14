@@ -53,5 +53,46 @@ namespace SmartCookers_WebAPI.Controllers
 
         }
 
+        [HttpPost]
+        [Route("register-staff")]
+        public async Task<IActionResult> RegisterStaff([FromBody] StaffRegisterDto staffRegisterDto)
+        {
+            var userExists = await _userManager.FindByEmailAsync(staffRegisterDto.Email);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+
+            SmartUser user = new()
+            {
+                Email = staffRegisterDto.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = staffRegisterDto.UserName
+            };
+            var result = await _userManager.CreateAsync(user, staffRegisterDto.Password);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation fail" });
+
+            string userrole = "";
+
+            switch (staffRegisterDto.type.ToUpper())
+            {
+                case "INVENTORYSTAFF": userrole = UserRoles.InventoryStaff; break;
+                case "SALESSTAFF": userrole = UserRoles.SalesStaff; break;
+                default: break;
+            }
+
+
+            if (!await _roleManager.RoleExistsAsync(userrole))
+                await _roleManager.CreateAsync(new SmartIdentityRole() { Name = userrole });
+
+            if (await _roleManager.RoleExistsAsync(userrole))
+            {
+                await _userManager.AddToRoleAsync(user, userrole);
+            }
+
+            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+
+        }
+
+
     }
 }
