@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SmartCookers_WebAPI.Constants;
+using SmartCookers_WebAPI.Dtos.Login;
 using SmartCookers_WebAPI.Dtos.Register;
 using SmartCookers_WebAPI.Dtos.Response;
 using SmartCookers_WebAPI.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace SmartCookers_WebAPI.Controllers
 {
@@ -22,6 +27,41 @@ namespace SmartCookers_WebAPI.Controllers
             _roleManager = roleManager;
             _configuration = configuration;
         }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto )
+        {
+           
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            
+            if(user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            {
+                var userRoles = await _userManager.GetRolesAsync(user); // get all list of user roles 
+
+                var authclaims = new List<Claim>
+                {
+                   new Claim(ClaimTypes.Name,user.UserName),
+                   new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                };
+
+                // add multiple roles to the claim 
+                foreach(var role in userRoles)
+                {
+                    authclaims.Add(new Claim(ClaimTypes.Role,role));
+                }
+
+                var Authtoken = GetAuthenticationToken(authclaims);
+
+                return Ok(new
+                {
+                    token=new JwtSecurityTokenHandler().WriteToken(Authtoken),
+                    expiration = Authtoken.ValidTo
+                });
+            }
+            return Unauthorized();
+        }
+
 
         [HttpPost]
         [Route("register-Customer")]
@@ -73,7 +113,7 @@ namespace SmartCookers_WebAPI.Controllers
 
             string userrole = "";
 
-            switch (staffRegisterDto.type.ToUpper())
+            switch (staffRegisterDto.Stafftype.ToUpper())
             {
                 case "INVENTORYSTAFF": userrole = UserRoles.InventoryStaff; break;
                 case "SALESSTAFF": userrole = UserRoles.SalesStaff; break;
@@ -93,6 +133,21 @@ namespace SmartCookers_WebAPI.Controllers
 
         }
 
+
+        private JwtSecurityToken GetAuthenticationToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken(
+              //  issuer: _configuration["JWT:ValidIssuer"],
+               // audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
+        }
 
     }
 }
