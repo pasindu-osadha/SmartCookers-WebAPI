@@ -28,3 +28,10 @@ staff logins
   "password": "Abc#12345",
   "stafftype": "SALESSTAFF"
 }
+
+{
+  "userName": "Admin01",
+  "email": "Admin@gmail.com",
+  "password": "Abc#12345",
+  "stafftype": "ADMIN"
+}

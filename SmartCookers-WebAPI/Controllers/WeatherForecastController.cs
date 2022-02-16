@@ -5,6 +5,7 @@ using SmartCookers_WebAPI.Constants;
 namespace SmartCookers_WebAPI.Controllers
 {
     [Authorize (Roles =UserRoles.Customer)]
+    [Authorize(Roles = UserRoles.Admin)]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
