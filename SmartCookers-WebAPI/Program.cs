@@ -93,6 +93,7 @@ public static class ServiceExtensions
     public static void RegisterDependancyInjection(this IServiceCollection services)
     {
         services.AddScoped<IProductRepo, ProductRepo>();
+        services.AddScoped<IOutletRepo, OutletRepo>();
     }
 
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartCookers_WebAPI.Data.Interfaces;
 using SmartCookers_WebAPI.Dtos.Product;
+using SmartCookers_WebAPI.Dtos.ProductInOutlet;
 using SmartCookers_WebAPI.Models;
 
 namespace SmartCookers_WebAPI.Data.Repository
@@ -20,14 +21,16 @@ namespace SmartCookers_WebAPI.Data.Repository
        
         public async Task<IEnumerable<ProductReadDto>> GetAllProducts()
         {
-          var result =await _context.Products.ToListAsync();
+          var result = _context.Products.Include(P => P.Product_Picture).ToList();
             return _mapper.Map<IEnumerable<ProductReadDto>>(result);
 
         }
 
         public ProductReadDto GetProductById(Guid id)
         {
-            throw new NotImplementedException();
+            var result = _context.Products.Include(p => p.Product_Picture).FirstOrDefault(p=>p.Id==id);
+            return _mapper.Map<ProductReadDto>(result);
+            //throw new NotImplementedException();
         }
 
         public ProductReadDto GetProductByName(string name)
@@ -53,5 +56,25 @@ namespace SmartCookers_WebAPI.Data.Repository
             return _mapper.Map<ProductReadDto>(p);
         }
 
+        public IEnumerable<ProductInOutletReadDto> GetProductinOutlet(string outletName)
+        {
+
+            var outletResult =  _context.Outlets.Where(p => p.Outlet_Name == outletName).FirstOrDefault();
+            if (outletResult == null)
+                return null;
+
+            var result = _context.Product_In_Outlets.Where(p => p.Outlet.Id == outletResult.Id).Include(p=>p.Product).ThenInclude(p=>p.Product_Picture).ToList();
+
+            return _mapper.Map<IEnumerable<ProductInOutletReadDto>>(result);
+
+           
+        }
+
+        public ProductInOutletReadDto GetProductinOutletItem(Guid id)
+        {
+            var result = _context.Product_In_Outlets.Where(p => p.Id == id).Include(p => p.Product).ThenInclude(p => p.Product_Picture).FirstOrDefault();
+
+            return _mapper.Map<ProductInOutletReadDto>(result);
+        }
     }
 }

@@ -4,11 +4,11 @@ namespace SmartCookers_WebAPI.Dtos.Product
 {
     public class ProductCreateDto
     {
-        public string? Product_Name { get; set; }
-        public string? Product_Description { get; set; }
-        public decimal Product_UnitPrice { get; set; }
-        public int? Product_Quantity { get; set; }
-        public string? Product_Picture_Url { get; set; }
+        public string? product_Name { get; set; }
+        public string? product_Description { get; set; }
+        public decimal product_UnitPrice { get; set; }
+        public int? product_Quantity { get; set; }
+        public string? product_Picture_Url { get; set; }
       
     }
 }

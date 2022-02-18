@@ -25,21 +25,22 @@ namespace SmartCookers_WebAPI.Controllers
             _repo=   repo;
         }
 
-        // GET: api/Products
+      
         [HttpGet]
         [Route("AllProduct")]
         public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetProducts()
         {
            var a = await _repo.GetAllProducts();
-            return Ok(a);
+               return Ok(a);
+
         }
 
         [HttpGet]
         [Route("GetProduct/{id}")]
         public async Task<ActionResult<ProductReadDto>> GetProduct(Guid id)
         {
-            
-            return Ok();
+            var a = _repo.GetProductById(id);
+            return Ok(a);
         }
 
         [HttpPost]
@@ -49,5 +50,30 @@ namespace SmartCookers_WebAPI.Controllers
 
             return Ok(_repo.AddProduct(productCreateDto));
         }
+
+        [HttpGet]
+        [Route("GetProductInOutlet/{outletName}")]
+        public async Task<ActionResult> GetProductInOutlet(string outletName)
+        {
+            var r = _repo.GetProductinOutlet(outletName);
+            
+            if (r == null)
+                return NotFound();
+
+            return Ok(r);
+        }
+
+        [HttpGet]
+        [Route("GetProductInOutletItem/{id}")]
+        public async Task<ActionResult> GetProductInOutlet(Guid id)
+        {
+            var r = _repo.GetProductinOutletItem(id);
+
+            if (r == null)
+                return NotFound();
+
+            return Ok(r);
+        }
+
     }
 }
