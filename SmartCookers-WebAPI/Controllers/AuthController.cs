@@ -41,14 +41,15 @@ namespace SmartCookers_WebAPI.Controllers
 
                 var authclaims = new List<Claim>
                 {
-                   new Claim(ClaimTypes.Name,user.UserName),
+                   new Claim("ID",user.Id.ToString()),
+                   new Claim("Name",user.UserName),
                    new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 };
 
                 // add multiple roles to the claim 
                 foreach(var role in userRoles)
                 {
-                    authclaims.Add(new Claim(ClaimTypes.Role,role));
+                    authclaims.Add(new Claim("Role", role));
                 }
 
                 var Authtoken = GetAuthenticationToken(authclaims);
@@ -56,8 +57,10 @@ namespace SmartCookers_WebAPI.Controllers
                 return Ok(new
                 {
                     token=new JwtSecurityTokenHandler().WriteToken(Authtoken),
-                    expiration = Authtoken.ValidTo
+                   // expiration = Authtoken.ValidTo
                 });
+
+                
             }
             return Unauthorized();
         }
@@ -117,6 +120,7 @@ namespace SmartCookers_WebAPI.Controllers
             {
                 case "INVENTORYSTAFF": userrole = UserRoles.InventoryStaff; break;
                 case "SALESSTAFF": userrole = UserRoles.SalesStaff; break;
+                case "ADMIN":userrole = UserRoles.Admin;break;
                 default: break;
             }
 

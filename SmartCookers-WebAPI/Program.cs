@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SmartCookers_WebAPI.Data;
+using SmartCookers_WebAPI.Data.Interfaces;
+using SmartCookers_WebAPI.Data.Repository;
 using SmartCookers_WebAPI.Models;
 using System.Text;
 
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<SmartDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.RegisterIdentity();
+builder.Services.RegisterDependancyInjection();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
@@ -49,6 +53,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// global cors policy
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    .AllowCredentials()); // allow credentials
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -76,6 +88,12 @@ public static class ServiceExtensions
              .AddEntityFrameworkStores<SmartDbContext>()
              .AddDefaultTokenProviders();
 
+    }
+    //for dependancy injection
+    public static void RegisterDependancyInjection(this IServiceCollection services)
+    {
+        services.AddScoped<IProductRepo, ProductRepo>();
+        services.AddScoped<IOutletRepo, OutletRepo>();
     }
 
 }
