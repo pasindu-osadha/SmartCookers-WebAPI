@@ -33,5 +33,20 @@ namespace SmartCookers_WebAPI.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("getTrasnsactionHistory/{id}")]
+        public async Task<ActionResult> ViewTransactionHistoryAsync(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            var userRole = await _userManager.GetRolesAsync(user);
+            if (user == null)
+                return BadRequest();
+
+
+            var result =await _repo.viewTransactionHistoryAsync(user,userRole[0]);
+            return Ok(result);
+        }
+
     }
 }
