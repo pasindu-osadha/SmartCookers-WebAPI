@@ -95,6 +95,7 @@ public static class ServiceExtensions
         services.AddScoped<IProductRepo, ProductRepo>();
         services.AddScoped<IOutletRepo, OutletRepo>();
         services.AddScoped<IUserRepo, UserRepo>();
+        services.AddScoped<IOrderRepo, OrderRepo>();
     }
 
 }
