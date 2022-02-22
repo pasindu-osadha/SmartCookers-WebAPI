@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartCookers_WebAPI.Constants;
 using SmartCookers_WebAPI.Data;
 using SmartCookers_WebAPI.Data.Interfaces;
 using SmartCookers_WebAPI.Dtos.Product;
@@ -13,6 +15,7 @@ using SmartCookers_WebAPI.Models;
 
 namespace SmartCookers_WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -25,7 +28,7 @@ namespace SmartCookers_WebAPI.Controllers
             _repo=   repo;
         }
 
-      
+       
         [HttpGet]
         [Route("AllProduct")]
         public async Task<ActionResult<IEnumerable<ProductReadDto>>> GetProducts()
@@ -43,6 +46,7 @@ namespace SmartCookers_WebAPI.Controllers
             return Ok(a);
         }
 
+        [Authorize(Policy = "InventoryOnly")]
         [HttpPost]
         [Route("AddProduct")]
         public async Task<ActionResult<ProductReadDto>> AddProduct(ProductCreateDto productCreateDto)
@@ -51,6 +55,7 @@ namespace SmartCookers_WebAPI.Controllers
             return Ok(_repo.AddProduct(productCreateDto));
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetProductInOutlet/{outletName}")]
         public async Task<ActionResult> GetProductInOutlet(string outletName)
@@ -63,6 +68,7 @@ namespace SmartCookers_WebAPI.Controllers
             return Ok(r);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("GetProductInOutletItem/{id}")]
         public async Task<ActionResult> GetProductInOutlet(Guid id)

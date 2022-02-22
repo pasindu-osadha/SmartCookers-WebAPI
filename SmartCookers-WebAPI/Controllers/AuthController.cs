@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -65,7 +66,7 @@ namespace SmartCookers_WebAPI.Controllers
             return Unauthorized();
         }
 
-
+        [Authorize(Policy = "AdiminOnly")]
         [HttpPost]
         [Route("register-Customer")]
         public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegisterDto customerRegisterDto)
@@ -96,6 +97,7 @@ namespace SmartCookers_WebAPI.Controllers
 
         }
 
+        [Authorize(Policy = "AdiminOnly")]
         [HttpPost]
         [Route("register-staff")]
         public async Task<IActionResult> RegisterStaff([FromBody] StaffRegisterDto staffRegisterDto)
