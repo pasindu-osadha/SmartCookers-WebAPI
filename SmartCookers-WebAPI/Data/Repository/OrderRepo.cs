@@ -23,7 +23,7 @@ namespace SmartCookers_WebAPI.Data.Repository
         public async Task<bool> CreateOrder(OrderCreateDto orderCreateDto, SmartUser user)
         {
 
-            var productinoutlet = _context.Product_In_Outlets.FirstOrDefault(p => p.Id == orderCreateDto.productInOutletId);  //            FindByIdAsync(orderCreateDto.productInOutletId);
+            var productinoutlet = _context.Product_In_Outlets.FirstOrDefault(p => p.Id == orderCreateDto.productInOutletId);  
             if (productinoutlet == null)
                 return false;
 

@@ -43,6 +43,21 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireClaim("Role", "ADMIN"));
+
+    options.AddPolicy("SalesOnly", policy =>
+        policy.RequireClaim("Role", "SALESSTAFF"));
+
+    options.AddPolicy("InventoryOnly", policy =>
+      policy.RequireClaim("Role", "INVENTORYSTAFF"));
+
+    options.AddPolicy("CustomerOnly", policy =>
+        policy.RequireClaim("Role", "CUSTOMER"));
+
+});
 
 
 
